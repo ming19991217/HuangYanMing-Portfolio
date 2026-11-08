@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>黃彥銘 Huang, Yan Ming | Unity Engineer Portfolio</title>
+<meta name="description" content="黃彥銘 Unity Engineer 作品集">
+<style>
+  :root{--bg:#f4f2ee;--ink:#1c1c1a;--muted:#8a877f;--line:#e2dfd8;--card:#fff;
+    --font:"Helvetica Neue","Inter",-apple-system,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif}
+  @media (prefers-color-scheme:dark){:root{--bg:#161615;--ink:#ecebe7;--muted:#8d8b84;--line:#2c2c2a;--card:#1f1f1d}}
+  *{box-sizing:border-box;margin:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased}
+  .title-chip,.dl-btn{position:fixed;top:20px;z-index:20;height:44px;display:flex;align-items:center;
+    border:1px solid var(--line);border-radius:999px;text-decoration:none;color:var(--ink);
+    background:color-mix(in srgb,var(--card) 82%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    box-shadow:0 4px 18px rgba(0,0,0,.05)}
+  .title-chip{left:20px;padding:0 20px 0 16px;gap:12px}
+  .title-chip .dot{width:7px;height:7px;border-radius:50%;background:var(--ink)}
+  .title-chip .name{font-size:14px;font-weight:600;letter-spacing:.02em}
+  .title-chip .role{font-size:12px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+  .dl-btn{right:20px;padding:0 20px;gap:8px;font-size:13px;letter-spacing:.04em;transition:.2s}
+  .dl-btn:hover{background:var(--ink);color:var(--bg)}
+  .dl-btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  main{max-width:960px;margin:0 auto;padding:110px 20px 100px}
+  .page{background:var(--card);border:1px solid var(--line);border-radius:6px;margin-bottom:28px;overflow:hidden;
+    aspect-ratio:var(--ratio,16/9);box-shadow:0 10px 40px rgba(0,0,0,.05);position:relative}
+  .page canvas{width:100%;height:100%;display:block;opacity:0;transition:opacity .5s}
+  .page.ready canvas{opacity:1}
+  .loading{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-size:12px;letter-spacing:.15em}
+  .page.ready .loading{display:none}
+  .hot{position:absolute;display:block;border-radius:6px;cursor:pointer;transition:background .2s,box-shadow .2s}
+  .hot:hover{background:rgba(120,120,120,.14);box-shadow:0 0 0 2px rgba(120,120,120,.35)}
+  .progress{position:fixed;left:0;top:0;height:2px;width:0;background:var(--ink);z-index:30}
+  .counter{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:20;padding:8px 16px;border-radius:999px;
+    font-size:12px;letter-spacing:.12em;color:var(--muted);border:1px solid var(--line);
+    background:color-mix(in srgb,var(--card) 82%,transparent);backdrop-filter:blur(14px)}
+  footer{text-align:center;color:var(--muted);font-size:12px;letter-spacing:.08em;padding-bottom:60px}
+  footer a{color:inherit}
+  .fallback{max-width:420px;margin:120px auto;text-align:center;color:var(--muted);display:none;line-height:1.8}
+  .fallback a{color:var(--ink)}
+  .modal{position:fixed;inset:0;z-index:100;display:none;place-items:center;padding:20px;
+    background:rgba(15,15,14,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+  .modal.open{display:grid;animation:fade .2s}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .modal-box{width:min(960px,100%);position:relative}
+  .modal-frame{aspect-ratio:16/9;background:#000;border-radius:8px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+  .modal-frame iframe{width:100%;height:100%;border:0;display:block}
+  .modal-close{position:absolute;right:0;top:-48px;height:38px;padding:0 16px;border-radius:999px;
+    border:1px solid rgba(255,255,255,.3);background:transparent;color:#fff;font:inherit;font-size:13px;letter-spacing:.06em;cursor:pointer}
+  .modal-close:hover{background:#fff;color:#111}
+  @media (max-width:560px){
+    .title-chip .role{display:none}
+    .title-chip,.dl-btn{top:12px;height:40px}
+    .title-chip{left:12px}.dl-btn{right:12px;padding:0 14px}
+    main{padding:80px 10px 90px}
+  }
+</style>
+</head>
+<body>
+  <div class="progress" id="bar"></div>
+  <a class="title-chip" href="#top"><span class="dot"></span><span class="name">黃彥銘 Huang, Yan Ming</span><span class="role">Unity Engineer</span></a>
+  <a class="dl-btn" href="HuangYanMing-Portfolio.pdf" download>
+    <svg viewBox="0 0 24 24"><path d="M12 4v12M7 11l5 5 5-5M5 20h14"/></svg>下載 PDF</a>
+
+  <main id="top"><div id="pages"></div></main>
+  <div class="fallback" id="fb">無法載入預覽。<br>請直接<a href="HuangYanMing-Portfolio.pdf">開啟 PDF</a>。</div>
+
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="影片播放">
+    <div class="modal-box">
+      <button class="modal-close" id="mclose">關閉 ✕</button>
+      <div class="modal-frame" id="mframe"></div>
+    </div>
+  </div>
+
+  <div class="counter" id="counter">— / —</div>
+  <footer>© 2026 Huang, Yan Ming · <a href="https://github.com/ming19991217">GitHub</a></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+(async function(){
+  const URL_PDF="HuangYanMing-Portfolio.pdf";
+  const wrap=document.getElementById("pages"), counter=document.getElementById("counter"), bar=document.getElementById("bar");
+  const modal=document.getElementById("modal"), mframe=document.getElementById("mframe");
+
+  function ytId(u){
+    try{const x=new URL(u);
+      if(x.hostname==="youtu.be") return x.pathname.slice(1);
+      if(x.hostname.endsWith("youtube.com")) return x.searchParams.get("v");
+    }catch(e){} return null;
+  }
+  function openVideo(id){
+    mframe.innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+encodeURIComponent(id)+'?autoplay=1&rel=0" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
+    modal.classList.add("open"); document.body.style.overflow="hidden";
+  }
+  function closeVideo(){ modal.classList.remove("open"); mframe.innerHTML=""; document.body.style.overflow=""; }
+  document.getElementById("mclose").addEventListener("click",closeVideo);
+  modal.addEventListener("click",e=>{ if(e.target===modal) closeVideo(); });
+  addEventListener("keydown",e=>{ if(e.key==="Escape") closeVideo(); });
+
+  try{
+    pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+    const pdf=await pdfjsLib.getDocument(URL_PDF).promise;
+    const total=pdf.numPages; counter.textContent="1 / "+total;
+    const first=await pdf.getPage(1), v0=first.getViewport({scale:1}), ratio=v0.width/v0.height;
+
+    const els=[];
+    for(let i=1;i<=total;i++){
+      const d=document.createElement("div");
+      d.className="page"; d.dataset.n=i; d.style.setProperty("--ratio",ratio);
+      d.innerHTML='<div class="loading">LOADING</div><canvas></canvas>';
+      wrap.appendChild(d); els.push(d);
+    }
+    const rendered=new Set();
+    async function render(i){
+      if(rendered.has(i)) return; rendered.add(i);
+      const page=await pdf.getPage(i), el=els[i-1], cv=el.querySelector("canvas");
+      const vp0=page.getViewport({scale:1});
+      const vp=page.getViewport({scale:el.clientWidth*Math.min(devicePixelRatio||1,2)/vp0.width});
+      cv.width=vp.width; cv.height=vp.height;
+      await page.render({canvasContext:cv.getContext("2d"),viewport:vp}).promise;
+      el.classList.add("ready");
+      (await page.getAnnotations()).forEach(a=>{
+        if(a.subtype!=="Link"||!a.url) return;
+        const [x1,y1,x2,y2]=vp0.convertToViewportRectangle(a.rect);
+        const link=document.createElement("a");
+        link.className="hot"; link.href=a.url;
+        link.style.cssText=`left:${Math.min(x1,x2)/vp0.width*100}%;top:${Math.min(y1,y2)/vp0.height*100}%;width:${Math.abs(x2-x1)/vp0.width*100}%;height:${Math.abs(y2-y1)/vp0.height*100}%`;
+        const yt=ytId(a.url);
+        if(yt){ link.title="播放影片"; link.addEventListener("click",e=>{e.preventDefault();openVideo(yt);}); }
+        else if(/^https?:/.test(a.url)){ link.target="_blank"; link.rel="noopener noreferrer"; }
+        el.appendChild(link);
+      });
+    }
+    const lazy=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting) render(+e.target.dataset.n);}),{rootMargin:"1200px 0px"});
+    const seen=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting) counter.textContent=e.target.dataset.n+" / "+total;}),{rootMargin:"-45% 0px -45% 0px"});
+    els.forEach(e=>{lazy.observe(e);seen.observe(e);});
+  }catch(err){
+    console.error(err); document.getElementById("fb").style.display="block"; counter.style.display="none";
+  }
+  addEventListener("scroll",()=>{const h=document.documentElement;
+    bar.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+"%";},{passive:true});
+})();
+</script>
+</body>
+</html>
