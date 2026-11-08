@@ -12,21 +12,38 @@
   *{box-sizing:border-box;margin:0}
   html{scroll-behavior:smooth}
   body{background:var(--bg);color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased}
-  .title-chip,.dl-btn{position:fixed;top:20px;z-index:20;height:44px;display:flex;align-items:center;
+
+  .title-chip,.dl-btn{position:fixed;top:20px;z-index:20;height:44px;display:flex;align-items:center;overflow:hidden;white-space:nowrap;
     border:1px solid var(--line);border-radius:999px;text-decoration:none;color:var(--ink);
     background:color-mix(in srgb,var(--card) 82%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-    box-shadow:0 4px 18px rgba(0,0,0,.05)}
+    box-shadow:0 4px 18px rgba(0,0,0,.05);
+    transition:top .3s,height .3s,padding .3s,opacity .3s,background .2s,color .2s,box-shadow .3s}
   .title-chip{left:20px;padding:0 20px 0 16px;gap:10px}
-  .title-chip .dot{width:7px;height:7px;border-radius:50%;background:var(--ink)}
-  .title-chip .name{font-size:14px;font-weight:600;letter-spacing:.02em}
-  .title-chip .role{font-size:13px;color:var(--muted);letter-spacing:.02em}
-  .dl-btn{right:20px;padding:0 20px;gap:8px;font-size:13px;letter-spacing:.04em;transition:.2s}
+  .title-chip .dot{width:7px;height:7px;border-radius:50%;background:var(--ink);flex:none;transition:.3s}
+  .title-chip .name{font-size:14px;font-weight:600;letter-spacing:.02em;transition:font-size .3s}
+  .title-chip .role{font-size:13px;color:var(--muted);max-width:140px;opacity:1;transition:max-width .3s,opacity .3s}
+  .dl-btn{right:20px;padding:0 20px;gap:8px;font-size:13px;letter-spacing:.04em}
+  .dl-btn svg{width:15px;height:15px;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:.3s}
+  .dl-btn .lbl{max-width:80px;opacity:1;transition:max-width .3s,opacity .3s}
   .dl-btn:hover{background:var(--ink);color:var(--bg)}
-  .dl-btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 
-  main{width:min(1680px,96vw);margin:0 auto;padding:84px 0 100px}
-  .page{background:var(--card);border:1px solid var(--line);border-radius:6px;margin-bottom:24px;overflow:hidden;
-    aspect-ratio:var(--ratio,16/9);box-shadow:0 10px 40px rgba(0,0,0,.05);position:relative}
+  body.compact .title-chip,body.compact .dl-btn{top:12px;height:32px;opacity:.72;box-shadow:none}
+  body.compact .title-chip{padding:0 12px;gap:8px}
+  body.compact .title-chip .name{font-size:12px}
+  body.compact .title-chip .role{max-width:0;opacity:0}
+  body.compact .dl-btn{padding:0 10px;gap:0}
+  body.compact .dl-btn .lbl{max-width:0;opacity:0}
+  body.compact .dl-btn svg{width:14px;height:14px}
+  body.compact .title-chip:hover,body.compact .dl-btn:hover{opacity:1}
+  body.compact .title-chip:hover{padding:0 16px 0 14px}
+  body.compact .title-chip:hover .role{max-width:140px;opacity:1}
+  body.compact .dl-btn:hover{padding:0 16px;gap:8px}
+  body.compact .dl-btn:hover .lbl{max-width:80px;opacity:1}
+
+  /* 寬度同時受限於視窗寬度與高度，確保單頁完整可見並保留留白 */
+  main{width:min(1360px,88vw,calc((100vh - 170px)*16/9));min-width:min(720px,94vw);margin:0 auto;padding:90px 0 120px}
+  .page{background:var(--card);border:1px solid var(--line);border-radius:6px;margin-bottom:44px;overflow:hidden;
+    aspect-ratio:var(--ratio,16/9);box-shadow:0 12px 44px rgba(0,0,0,.06);position:relative}
   .page canvas{width:100%;height:100%;display:block;opacity:0;transition:opacity .5s}
   .page.ready canvas{opacity:1}
   .loading{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-size:12px;letter-spacing:.15em}
@@ -34,7 +51,7 @@
   .hot{position:absolute;display:block;border-radius:6px;cursor:pointer;transition:background .2s,box-shadow .2s}
   .hot:hover{background:rgba(120,120,120,.14);box-shadow:0 0 0 2px rgba(120,120,120,.35)}
   .progress{position:fixed;left:0;top:0;height:2px;width:0;background:var(--ink);z-index:30}
-  .counter{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:20;padding:8px 16px;border-radius:999px;
+  .counter{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:20;padding:7px 14px;border-radius:999px;
     font-size:12px;letter-spacing:.12em;color:var(--muted);border:1px solid var(--line);
     background:color-mix(in srgb,var(--card) 82%,transparent);backdrop-filter:blur(14px)}
   footer{text-align:center;color:var(--muted);font-size:12px;letter-spacing:.08em;padding-bottom:60px}
@@ -57,17 +74,20 @@
     background:rgba(15,15,14,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
   .modal.open{display:grid;animation:fade .2s}
   @keyframes fade{from{opacity:0}to{opacity:1}}
-  .modal-box{width:min(1100px,100%);position:relative}
+  .modal-box{width:min(1100px,100%,calc((100vh - 120px)*16/9));position:relative}
   .modal-frame{aspect-ratio:16/9;background:#000;border-radius:8px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4)}
   .modal-frame iframe{width:100%;height:100%;border:0;display:block}
   .modal-close{position:absolute;right:0;top:-48px;height:38px;padding:0 16px;border-radius:999px;
     border:1px solid rgba(255,255,255,.3);background:transparent;color:#fff;font:inherit;font-size:13px;letter-spacing:.06em;cursor:pointer}
   .modal-close:hover{background:#fff;color:#111}
-  @media (max-width:560px){
+
+  @media (max-width:700px){
     .title-chip .role{display:none}
-    .title-chip,.dl-btn{top:12px;height:40px}
+    .title-chip,.dl-btn{top:12px;height:38px}
     .title-chip{left:12px}.dl-btn{right:12px;padding:0 14px}
-    main{width:100%;padding:70px 8px 90px}
+    body.compact .title-chip,body.compact .dl-btn{height:30px}
+    main{width:100%;min-width:0;padding:64px 8px 90px}
+    .page{margin-bottom:20px}
   }
 </style>
 </head>
@@ -84,8 +104,8 @@
 
   <div class="progress" id="bar"></div>
   <a class="title-chip" href="#top"><span class="dot"></span><span class="name">黃彥銘</span><span class="role">Unity Engineer</span></a>
-  <a class="dl-btn" href="HuangYanMing-Portfolio.pdf" download>
-    <svg viewBox="0 0 24 24"><path d="M12 4v12M7 11l5 5 5-5M5 20h14"/></svg>下載 PDF</a>
+  <a class="dl-btn" href="HuangYanMing-Portfolio.pdf" download aria-label="下載 PDF" title="下載 PDF">
+    <svg viewBox="0 0 24 24"><path d="M12 4v12M7 11l5 5 5-5M5 20h14"/></svg><span class="lbl">下載 PDF</span></a>
 
   <main id="top"><div id="pages"></div></main>
 
@@ -122,6 +142,13 @@
   modal.addEventListener("click",e=>{ if(e.target===modal) closeVideo(); });
   addEventListener("keydown",e=>{ if(e.key==="Escape") closeVideo(); });
 
+  function onScroll(){
+    const h=document.documentElement, y=h.scrollTop;
+    bar.style.width=(y/Math.max(1,h.scrollHeight-h.clientHeight)*100)+"%";
+    document.body.classList.toggle("compact", y>80);
+  }
+  addEventListener("scroll",onScroll,{passive:true}); onScroll();
+
   const mb=n=>(n/1048576).toFixed(1);
   try{
     pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
@@ -131,14 +158,13 @@
         strack.classList.remove("indet");
         sfill.style.width=Math.min(100,loaded/total*100)+"%";
         stext.textContent="LOADING  "+Math.floor(loaded/total*100)+"%  ·  "+mb(loaded)+" / "+mb(total)+" MB";
-      }else{
-        stext.textContent="LOADING  "+mb(loaded)+" MB";
-      }
+      }else stext.textContent="LOADING  "+mb(loaded)+" MB";
     };
     const pdf=await task.promise;
     const total=pdf.numPages; counter.textContent="1 / "+total;
     stext.textContent="RENDERING";
     const first=await pdf.getPage(1), v0=first.getViewport({scale:1}), ratio=v0.width/v0.height;
+    document.getElementById("top").style.setProperty("--ratio",ratio);
 
     const els=[];
     for(let i=1;i<=total;i++){
@@ -178,8 +204,6 @@
     strack.style.display="none"; stext.style.display="none"; $("serr").style.display="block";
     counter.style.display="none";
   }
-  addEventListener("scroll",()=>{const h=document.documentElement;
-    bar.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+"%";},{passive:true});
 })();
 </script>
 </body>
