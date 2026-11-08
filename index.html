@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>黃彥銘 Huang, Yan Ming | Unity Engineer Portfolio</title>
+<title>黃彥銘 | Unity Engineer Portfolio</title>
 <meta name="description" content="黃彥銘 Unity Engineer 作品集">
 <style>
   :root{--bg:#f4f2ee;--ink:#1c1c1a;--muted:#8a877f;--line:#e2dfd8;--card:#fff;
@@ -16,15 +16,16 @@
     border:1px solid var(--line);border-radius:999px;text-decoration:none;color:var(--ink);
     background:color-mix(in srgb,var(--card) 82%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
     box-shadow:0 4px 18px rgba(0,0,0,.05)}
-  .title-chip{left:20px;padding:0 20px 0 16px;gap:12px}
+  .title-chip{left:20px;padding:0 20px 0 16px;gap:10px}
   .title-chip .dot{width:7px;height:7px;border-radius:50%;background:var(--ink)}
   .title-chip .name{font-size:14px;font-weight:600;letter-spacing:.02em}
-  .title-chip .role{font-size:12px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+  .title-chip .role{font-size:13px;color:var(--muted);letter-spacing:.02em}
   .dl-btn{right:20px;padding:0 20px;gap:8px;font-size:13px;letter-spacing:.04em;transition:.2s}
   .dl-btn:hover{background:var(--ink);color:var(--bg)}
   .dl-btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-  main{max-width:960px;margin:0 auto;padding:110px 20px 100px}
-  .page{background:var(--card);border:1px solid var(--line);border-radius:6px;margin-bottom:28px;overflow:hidden;
+
+  main{width:min(1680px,96vw);margin:0 auto;padding:84px 0 100px}
+  .page{background:var(--card);border:1px solid var(--line);border-radius:6px;margin-bottom:24px;overflow:hidden;
     aspect-ratio:var(--ratio,16/9);box-shadow:0 10px 40px rgba(0,0,0,.05);position:relative}
   .page canvas{width:100%;height:100%;display:block;opacity:0;transition:opacity .5s}
   .page.ready canvas{opacity:1}
@@ -38,13 +39,25 @@
     background:color-mix(in srgb,var(--card) 82%,transparent);backdrop-filter:blur(14px)}
   footer{text-align:center;color:var(--muted);font-size:12px;letter-spacing:.08em;padding-bottom:60px}
   footer a{color:inherit}
-  .fallback{max-width:420px;margin:120px auto;text-align:center;color:var(--muted);display:none;line-height:1.8}
-  .fallback a{color:var(--ink)}
+
+  .splash{position:fixed;inset:0;z-index:60;display:grid;place-items:center;background:var(--bg);transition:opacity .5s,visibility .5s}
+  .splash.hide{opacity:0;visibility:hidden}
+  .splash-inner{width:min(300px,70vw);text-align:center}
+  .splash-name{font-size:15px;font-weight:600;letter-spacing:.04em}
+  .splash-role{font-size:12px;color:var(--muted);margin-top:4px;letter-spacing:.1em}
+  .splash-track{height:2px;background:var(--line);margin:28px 0 12px;overflow:hidden;border-radius:2px}
+  .splash-fill{height:100%;width:0;background:var(--ink);transition:width .25s}
+  .splash-track.indet .splash-fill{width:35%;animation:slide 1.2s ease-in-out infinite}
+  @keyframes slide{0%{margin-left:-35%}100%{margin-left:100%}}
+  .splash-text{font-size:12px;color:var(--muted);letter-spacing:.1em;font-variant-numeric:tabular-nums}
+  .splash-err{display:none;font-size:13px;color:var(--muted);line-height:1.8}
+  .splash-err a{color:var(--ink)}
+
   .modal{position:fixed;inset:0;z-index:100;display:none;place-items:center;padding:20px;
     background:rgba(15,15,14,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
   .modal.open{display:grid;animation:fade .2s}
   @keyframes fade{from{opacity:0}to{opacity:1}}
-  .modal-box{width:min(960px,100%);position:relative}
+  .modal-box{width:min(1100px,100%);position:relative}
   .modal-frame{aspect-ratio:16/9;background:#000;border-radius:8px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4)}
   .modal-frame iframe{width:100%;height:100%;border:0;display:block}
   .modal-close{position:absolute;right:0;top:-48px;height:38px;padding:0 16px;border-radius:999px;
@@ -54,18 +67,27 @@
     .title-chip .role{display:none}
     .title-chip,.dl-btn{top:12px;height:40px}
     .title-chip{left:12px}.dl-btn{right:12px;padding:0 14px}
-    main{padding:80px 10px 90px}
+    main{width:100%;padding:70px 8px 90px}
   }
 </style>
 </head>
 <body>
+  <div class="splash" id="splash">
+    <div class="splash-inner">
+      <div class="splash-name">黃彥銘</div>
+      <div class="splash-role">UNITY ENGINEER</div>
+      <div class="splash-track indet" id="strack"><div class="splash-fill" id="sfill"></div></div>
+      <div class="splash-text" id="stext">LOADING</div>
+      <div class="splash-err" id="serr">無法載入預覽。<br>請直接<a href="HuangYanMing-Portfolio.pdf">開啟 PDF</a>。</div>
+    </div>
+  </div>
+
   <div class="progress" id="bar"></div>
-  <a class="title-chip" href="#top"><span class="dot"></span><span class="name">黃彥銘 Huang, Yan Ming</span><span class="role">Unity Engineer</span></a>
+  <a class="title-chip" href="#top"><span class="dot"></span><span class="name">黃彥銘</span><span class="role">Unity Engineer</span></a>
   <a class="dl-btn" href="HuangYanMing-Portfolio.pdf" download>
     <svg viewBox="0 0 24 24"><path d="M12 4v12M7 11l5 5 5-5M5 20h14"/></svg>下載 PDF</a>
 
   <main id="top"><div id="pages"></div></main>
-  <div class="fallback" id="fb">無法載入預覽。<br>請直接<a href="HuangYanMing-Portfolio.pdf">開啟 PDF</a>。</div>
 
   <div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="影片播放">
     <div class="modal-box">
@@ -81,8 +103,9 @@
 <script>
 (async function(){
   const URL_PDF="HuangYanMing-Portfolio.pdf";
-  const wrap=document.getElementById("pages"), counter=document.getElementById("counter"), bar=document.getElementById("bar");
-  const modal=document.getElementById("modal"), mframe=document.getElementById("mframe");
+  const $=id=>document.getElementById(id);
+  const wrap=$("pages"), counter=$("counter"), bar=$("bar"), modal=$("modal"), mframe=$("mframe");
+  const splash=$("splash"), strack=$("strack"), sfill=$("sfill"), stext=$("stext");
 
   function ytId(u){
     try{const x=new URL(u);
@@ -95,14 +118,26 @@
     modal.classList.add("open"); document.body.style.overflow="hidden";
   }
   function closeVideo(){ modal.classList.remove("open"); mframe.innerHTML=""; document.body.style.overflow=""; }
-  document.getElementById("mclose").addEventListener("click",closeVideo);
+  $("mclose").addEventListener("click",closeVideo);
   modal.addEventListener("click",e=>{ if(e.target===modal) closeVideo(); });
   addEventListener("keydown",e=>{ if(e.key==="Escape") closeVideo(); });
 
+  const mb=n=>(n/1048576).toFixed(1);
   try{
     pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-    const pdf=await pdfjsLib.getDocument(URL_PDF).promise;
+    const task=pdfjsLib.getDocument(URL_PDF);
+    task.onProgress=({loaded,total})=>{
+      if(total){
+        strack.classList.remove("indet");
+        sfill.style.width=Math.min(100,loaded/total*100)+"%";
+        stext.textContent="LOADING  "+Math.floor(loaded/total*100)+"%  ·  "+mb(loaded)+" / "+mb(total)+" MB";
+      }else{
+        stext.textContent="LOADING  "+mb(loaded)+" MB";
+      }
+    };
+    const pdf=await task.promise;
     const total=pdf.numPages; counter.textContent="1 / "+total;
+    stext.textContent="RENDERING";
     const first=await pdf.getPage(1), v0=first.getViewport({scale:1}), ratio=v0.width/v0.height;
 
     const els=[];
@@ -121,6 +156,7 @@
       cv.width=vp.width; cv.height=vp.height;
       await page.render({canvasContext:cv.getContext("2d"),viewport:vp}).promise;
       el.classList.add("ready");
+      if(i===1) splash.classList.add("hide");
       (await page.getAnnotations()).forEach(a=>{
         if(a.subtype!=="Link"||!a.url) return;
         const [x1,y1,x2,y2]=vp0.convertToViewportRectangle(a.rect);
@@ -136,8 +172,11 @@
     const lazy=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting) render(+e.target.dataset.n);}),{rootMargin:"1200px 0px"});
     const seen=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting) counter.textContent=e.target.dataset.n+" / "+total;}),{rootMargin:"-45% 0px -45% 0px"});
     els.forEach(e=>{lazy.observe(e);seen.observe(e);});
+    setTimeout(()=>splash.classList.add("hide"),8000);
   }catch(err){
-    console.error(err); document.getElementById("fb").style.display="block"; counter.style.display="none";
+    console.error(err);
+    strack.style.display="none"; stext.style.display="none"; $("serr").style.display="block";
+    counter.style.display="none";
   }
   addEventListener("scroll",()=>{const h=document.documentElement;
     bar.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+"%";},{passive:true});
